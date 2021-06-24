@@ -12,6 +12,14 @@ This only works if you keep the episode name as part of your file name.
 
 However if you have other metadata in your file names, that should be fine.
 
+### Example of Misaligned Files
+![Alt text](screens/sonarr.png?raw=true "Title")
+
+
+### Example of Script Output
+![Alt text](screens/output.png?raw=true "Title")
+
+
 ## Usage
 Edit and run the script.
 

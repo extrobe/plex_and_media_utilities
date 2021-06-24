@@ -11,6 +11,7 @@ port = '8989' #YOUR SONARR PORT
 #END
 
 ignore_default_episdode_name = True # Ignore files where the Episode uses default episode naming?
+scrub__and__strings = True # scrub 'and' from file name strings. Fixes & vs 'and' mismatches
 z=0
 
 
@@ -60,6 +61,10 @@ def process_season(series_id):
                 # TIGHT (Don't recommend)
                 #file_conv = file
                 #title_conv = title
+
+                if scrub__and__strings:
+                    file_conv = file_conv.replace('and','')
+                    title_conv = title_conv.replace('and','')
 
                 if default_episode(title) and ignore_default_episdode_name:
                     #print("default episdode ordering")

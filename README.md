@@ -37,3 +37,4 @@ It should be pretty fast - for me it scans > 30,000 files in under 60 seconds, w
 ## Known Limitations
 
 - Multi-Episode files aren't always going to be handled well (as 1 file can't have two names!)
+- If the Episode doesn't have a title, it looks like it always defaults to 'Episode _N_ ' . This script will still expect to find this in the name, when it should perhaps just allow S01E01 format as acceptable.

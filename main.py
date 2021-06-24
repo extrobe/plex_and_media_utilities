@@ -5,12 +5,22 @@ import re
 from requests import api
 
 #UPDATE THESE THREE VALUES!!
-apikey = '000000000000' #YOUR API KEY
+apikey = '000000' #YOUR API KEY
 url = 'http://192.168.1.208' #YOUR SONARR URL
 port = '8989' #YOUR SONARR PORT
 #END
 
+ignore_default_episdode_name = True # Ignore files where the Episode uses default episode naming?
 z=0
+
+
+
+
+def default_episode(title):
+    if title[:7] == "Episode" and str.isnumeric(title[8:]):
+        return True
+    
+    return False
 
 def process_season(series_id):
     global z
@@ -52,7 +62,17 @@ def process_season(series_id):
                 #file_conv = file
                 #title_conv = title
 
-                if title_conv not in file_conv:
+                if default_episode(title) and ignore_default_episdode_name:
+                    #print("default episdode ordering")
+                    #chk_string = "E" + title[:8]
+
+                    # This function tests is the episode title is just 'default' naming. eg 'Episode 1'
+                    # In these cases, the user might not want/need 'Episode 1' in the file name.
+                    # What I'd like to do is then test the S01E01 matches, but for now, we'll just test for it with the option to skip these files
+
+                    1==1
+
+                elif title_conv not in file_conv:
                 
                     if not write_title:
                         with open("Output.txt", "a") as text_file:
@@ -69,7 +89,6 @@ def process_season(series_id):
 #            else: #just for debugging
 #                print('Skipped:' + title)
             n=n+1 # iterate
-
 
 
 print("STARTED!")

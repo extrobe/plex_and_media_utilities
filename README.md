@@ -17,9 +17,11 @@ Edit and run the script.
 
 Review the output file it generates, and detirmine if you need to re-arrange your files.
 
-**Note:** Just because an item was flagged, doesn't mean it's a genuine issue - just means it didn't see the episode title in the file name
+**Note:**
+Just because an item was flagged, doesn't mean it's a genuine issue - just means it didn't see the episode title in the file name
 
-**Important** This script DOES NOT change anything in Sonarr. Only YOU do that. However, you should make sure you're comfortable with what this code is doing before you run it - don't trust random code on the internet!
+**Important:**
+This script DOES NOT change anything in Sonarr. Only YOU do that. However, you should make sure you're comfortable with what this code is doing before you run it - don't trust random code on the internet!
 
 
 ## Setup
@@ -29,6 +31,8 @@ Save
 Run as python main.py
 
 this will create an output.txt file containing your results
+
+It should be pretty fast - for me it scans > 30,000 files in under 60 seconds, with my instance being on a remote device
 
 ## Known Limitations
 

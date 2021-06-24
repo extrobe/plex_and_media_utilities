@@ -3,11 +3,12 @@ import json
 import re
 
 from requests import api
-#response = requests.get('http://192.168.1.208:8989/api/episode?apikey={apikey}&seriesid={series}&episodenumber={episodenumber}')
 
-apikey = '' #YOUR API KEY
+#UPDATE THESE THREE VALUES!!
+apikey = '000000000000' #YOUR API KEY
 url = 'http://192.168.1.208' #YOUR SONARR URL
 port = '8989' #YOUR SONARR PORT
+#END
 
 z=0
 

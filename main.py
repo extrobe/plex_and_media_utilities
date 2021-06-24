@@ -29,16 +29,15 @@ def process_season(series_id):
 
     print("Processing: " + str(series_id) + " | " + series_name)
     
-    n=0
     write_title = False
 
     for element_episode in json_episode: 
-            title = json_episode[n]['title'] #the text name of the episode
-            has_file = json_episode[n]['hasFile'] #Boolean value as to whether there is a file associated with the episode
+            title = element_episode['title'] #the text name of the episode
+            has_file = element_episode['hasFile'] #Boolean value as to whether there is a file associated with the episode
 
             
             if has_file: #If we don't already have a file associated with the episode, we won't need to check it
-                file = json_episode[n]['episodeFile']['relativePath'] #file name we currently have for the episode
+                file = element_episode['episodeFile']['relativePath'] #file name we currently have for the episode
 
                 # The next thing we need to do is sompare the Titles. Files usually contain series/episode data
                 # so we want to check the file name 'contains' the episode title.
@@ -88,7 +87,6 @@ def process_season(series_id):
 #                    print('Looks Good: ' + title + " | " + file)
 #            else: #just for debugging
 #                print('Skipped:' + title)
-            n=n+1 # iterate
 
 
 print("STARTED!")
@@ -99,16 +97,10 @@ with open("Output.txt", "w") as text_file:
 response_series = requests.get(f'{url}:{port}/api/series?apikey={apikey}')
 json_series = json.loads(response_series.text)
 
-
-
-y=0
 for element in json_series:
-    series_id = json_series[y]['id']
-    series_name = json_series[y]['title']
-    #print(str(series_id) + ' | ' + series_name)
-    #if y <=3:
+    series_id = element['id']
+    series_name = element['title']
     process_season(series_id)
-    y=y+1
 
 print("DONE! " + str(z) + " issues found!")
 

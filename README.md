@@ -34,6 +34,21 @@ this will create an output.txt file containing your results
 
 It should be pretty fast - for me it scans > 30,000 files in under 60 seconds, with my instance being on a remote device
 
+## Optional Settings
+
+These can be edited directly in the main.py file
+
+### ignore_default_episdode_name
+Default = True
+
+If you have episodes without a name, they just get 'Episode 1', but you may not want this in your file name. Setting to True ignore this files.
+In the future I would like to instead 'test' these items against the SxxEyy string in the filename
+
+### scrub__and__strings
+Default = True
+
+If you use '&' and 'and' interchangeably, it might flag files as an issue. Setting this to True scrubs the work 'and' from the comparisons. ('&' already gets scrubbed unless you're using Strict comparison - in which case you would want to set this value to False)
+
 ## Known Limitations
 
 - Multi-Episode files aren't always going to be handled well (as 1 file can't have two names!)

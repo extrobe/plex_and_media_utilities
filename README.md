@@ -12,6 +12,15 @@ This only works if you keep the episode name as part of your file name.
 
 However if you have other metadata in your file names, that should be fine.
 
+## Usage
+Edit and run the script.
+
+Review the output file it generates, and detirmine if you need to re-arrange your files.
+
+**Note:** Just because an item was flagged, doesn't mean it's a genuine issue - just means it didn't see the episode title in the file name
+
+**Important** This script DOES NOT change anything in Sonarr. Only YOU do that. However, you should make sure you're comfortable with what this code is doing before you run it - don't trust random code on the internet!
+
 
 ## Setup
 You only need the main.py file.

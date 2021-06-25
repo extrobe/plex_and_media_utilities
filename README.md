@@ -57,7 +57,12 @@ Default = True
 
 If you use '&' and 'and' interchangeably, it might flag files as an issue. Setting this to True scrubs the work 'and' from the comparisons. ('&' already gets scrubbed unless you're using Strict comparison - in which case you would want to set this value to False)
 
+### allow_multi_part_episode_files
+Default = True
+
+When you have files covering multiple episodes, and the episode name is Episode Name (Part 1) & Episode Name (Part 2) , will match correctly if the rest of the episode name (excluding the 'part 1' part) matches
+
 ## Known Limitations
 
-- Multi-Episode files aren't always going to be handled well (as 1 file can't have two names!)
-- If the Episode doesn't have a title, it looks like it always defaults to 'Episode _N_ ' . This script will still expect to find this in the name, when it should perhaps just allow S01E01 format as acceptable.
+- There might still be some multi-episode files which don't get handled corectly, but believe most scenarios are now covered
+- If the Episode doesn't have a title, it looks like it always defaults to 'Episode _N_ ' . This script has the option to ignore these, but doesn't (yet) instead check the 'Episode 1' matches up with the file name S01E01 episode ID

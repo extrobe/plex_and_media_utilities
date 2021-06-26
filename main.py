@@ -5,8 +5,8 @@ import re
 from requests import api
 
 #UPDATE THESE THREE VALUES!!
-apikey = 'bf5320fd56da4a7e92aef6b48bb0284c' #YOUR API KEY
-url = 'http://sonarr.net.retac' #YOUR SONARR URL
+apikey = '000000' #YOUR API KEY
+url = 'http://192.168.1.208' #YOUR SONARR URL
 port = '8989' #YOUR SONARR PORT
 #END
 

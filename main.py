@@ -25,18 +25,12 @@ z=0 # global counter
 
 def default_episode(title):
     """Check whether the episode title has generic naming applied."""
-    if title[:7] == "Episode" and str.isnumeric(title[8:]):
-        return True
-    
-    return False
+    return (title[:7] == "Episode" and str.isnumeric(title[8:]))
 
 
 def is_multi_episode(file_string):
     """Check whether the file name covers multiple episdoes."""
-    if bool(re.search('(s\d{1,4}e\d{1,4}-\d{1,4})+',file_string)):
-        return True
-
-    return False
+    return bool(re.search('(s\d{1,4}e\d{1,4}-\d{1,4})+',file_string))
 
 
 def process_season(series_id):
@@ -95,7 +89,7 @@ def process_season(series_id):
                     # In these cases, the user might not want/need 'Episode 1' in the file name.
                     # What I'd like to do is then test the S01E01 matches, but for now, we'll just test for it with the option to skip these files
 
-                    1==1
+                    pass
 
                 elif title_conv not in file_conv:
                 
@@ -108,7 +102,7 @@ def process_season(series_id):
                         if is_multi_episode(str.lower(file)):
                             text_file.write("MULTIFILE: ")
                         text_file.write("Mismatch Found: %s" % title + " | " + file + "\n")
-                    z=z+1
+                    z+=1
 
 def main():
     """Kick off the primary process."""

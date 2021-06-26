@@ -5,8 +5,8 @@ import re
 from requests import api
 
 #UPDATE THESE THREE VALUES!!
-apikey = '000000' #YOUR API KEY
-url = 'http://192.168.1.208' #YOUR SONARR URL
+apikey = 'bf5320fd56da4a7e92aef6b48bb0284c' #YOUR API KEY
+url = 'http://sonarr.net.retac' #YOUR SONARR URL
 port = '8989' #YOUR SONARR PORT
 #END
 
@@ -18,10 +18,6 @@ SCRUB__AND__STRINGS = True # scrub 'and' from file name strings. Fixes & vs 'and
 # should exist in the file name 
 # Also, episode must be in the format SnnExx-yy)
 ALLOW_MULIT_PART_EPISODE_FILES = True
-
-
-z=0 # global counter
-
 
 def default_episode(title):
     """Check whether the episode title has generic naming applied."""
@@ -35,7 +31,6 @@ def is_multi_episode(file_string):
 
 def process_season(series_id, series_name):
     """Process all episodes for a given seasonID."""
-    global z
     response_episode = requests.get(f'{url}:{port}/api/episode?apikey={apikey}&seriesid={series_id}')
     json_episode = json.loads(response_episode.text)
 
@@ -43,6 +38,7 @@ def process_season(series_id, series_name):
     
     write_title = False
 
+    z = 0
     for element_episode in json_episode: 
             title = element_episode['title'] #the text name of the episode
             has_file = element_episode['hasFile'] #Boolean value as to whether there is a file associated with the episode
@@ -103,10 +99,13 @@ def process_season(series_id, series_name):
                             text_file.write("MULTIFILE: ")
                         text_file.write("Mismatch Found: %s" % title + " | " + file + "\n")
                     z+=1
+    return z
 
 def main():
     """Kick off the primary process."""
     print("STARTED!")
+
+    z = 0
 
     with open("Output.txt", "w") as text_file:
       text_file.write("Output for for today...\n")
@@ -117,7 +116,7 @@ def main():
     for element in json_series:
         series_id = element['id']
         series_name = element['title']
-        process_season(series_id, series_name)
+        z += process_season(series_id, series_name)
 
     print("DONE! " + str(z) + " issues found!")
 

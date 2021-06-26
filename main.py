@@ -10,14 +10,14 @@ url = 'http://192.168.1.208' #YOUR SONARR URL
 port = '8989' #YOUR SONARR PORT
 #END
 
-ignore_default_episdode_name = True # Ignore files where the Episode uses default episode naming?
-scrub__and__strings = True # scrub 'and' from file name strings. Fixes & vs 'and' mismatches
+IGNORE_DEFAULT_EPISODE_NAME = True # Ignore files where the Episode uses default episode naming?
+SCRUB__AND__STRINGS = True # scrub 'and' from file name strings. Fixes & vs 'and' mismatches
 
 # If a file covers multiple episodes, but the episodes otherwise have the same (eg Part1 & Part2), this will allow these to be handled better
 # Multi episode files where the episode name is different should be handled OK now anyway, (once renamed to Sonarr standards), as both episode names
 # should exist in the file name 
 # Also, episode must be in the format SnnExx-yy)
-allow_multi_part_episode_files = True
+ALLOW_MULIT_PART_EPISODE_FILES = True
 
 
 z=0 # global counter
@@ -33,7 +33,7 @@ def is_multi_episode(file_string):
     return bool(re.search('(s\d{1,4}e\d{1,4}-\d{1,4})+',file_string))
 
 
-def process_season(series_id):
+def process_season(series_id, series_name):
     """Process all episodes for a given seasonID."""
     global z
     response_episode = requests.get(f'{url}:{port}/api/episode?apikey={apikey}&seriesid={series_id}')
@@ -73,18 +73,18 @@ def process_season(series_id):
                 #file_conv = file
                 #title_conv = title
 
-                if scrub__and__strings:
+                if SCRUB__AND__STRINGS:
                     file_conv = file_conv.replace('and','')
                     title_conv = title_conv.replace('and','')
                 
-                if allow_multi_part_episode_files and is_multi_episode(str.lower(file)):
+                if ALLOW_MULIT_PART_EPISODE_FILES and is_multi_episode(str.lower(file)):
                     title_conv = title_conv[:-1] # remove the part ID from the end of the name (eg 'Epidode Name (1)' becomes 'Episode Name')
                     title_conv = title_conv.replace('part','') # remove the string 'part' from the file name (eg 'Episode Name Part 1' becomes 'Episode Name' (as the 1 was removed above) )
                     # note: If a file used something other that 'PART n' this won't pick it up
                     # Also, 'part' might be a valid part of the main episode name, so this would break that - should fix to only remove 'part' from the end
                     # But this only gets applied where we already know it's a multi episode file, so shouldn't cause too many issues
 
-                if default_episode(title) and ignore_default_episdode_name:
+                if default_episode(title) and IGNORE_DEFAULT_EPISODE_NAME:
                     # This function tests is the episode title is just 'default' naming. eg 'Episode 1'
                     # In these cases, the user might not want/need 'Episode 1' in the file name.
                     # What I'd like to do is then test the S01E01 matches, but for now, we'll just test for it with the option to skip these files
@@ -106,7 +106,6 @@ def process_season(series_id):
 
 def main():
     """Kick off the primary process."""
-    global series_name
     print("STARTED!")
 
     with open("Output.txt", "w") as text_file:
@@ -118,7 +117,7 @@ def main():
     for element in json_series:
         series_id = element['id']
         series_name = element['title']
-        process_season(series_id)
+        process_season(series_id, series_name)
 
     print("DONE! " + str(z) + " issues found!")
 

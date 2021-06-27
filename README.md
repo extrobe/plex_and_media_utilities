@@ -34,17 +34,32 @@ This script DOES NOT change anything in Sonarr. Only YOU do that. However, you s
 
 ## Setup
 You only need the main.py file.
-Update the URL, Port and API key (API key from Sonarr>Settings>General)
-Save
-Run as python main.py
+
+Open a terminal in the same folder as the file
+
+use the command
+
+`[python|python3] main.py `
+
+with the following arguments;
+
+- MANDATORY: `apikey` (API key from Sonarr>Settings>General)
+- MANDATORY: `url` (URL of your Sonarr Instance, without port number)
+- OPTIONAL: `[-p | --port]` (Port of your Sonarr Instance. Default is 8989)
+- OPTIONAL: `--print_progress` (Show progress in the terminal. Default it False)
+
+### Example:
+`python main.py 'aaabbbccc11122333' -u='http://192.168.1.101' -p=8989 --print_progress`
+
+_(Requires Python3. I have Python mapped to Python3)_
 
 this will create an output.txt file containing your results
 
-It should be pretty fast - for me it scans > 30,000 files in under 60 seconds, with my instance being on a remote device
+It should be pretty fast - for me it scans > 35,000 files in under 60 seconds, with my instance being on a remote device
 
 ## Optional Settings
 
-These can be edited directly in the main.py file
+These can be edited directly in the main.py file, though might be migrated to cli arugments in the future.
 
 ### ignore_default_episdode_name
 Default = True

@@ -44,7 +44,7 @@ use the command
 with the following arguments;
 
 - MANDATORY: `apikey` (API key from Sonarr>Settings>General)
-- MANDATORY: `[-u | --url]` (URL of your Sonarr Instance, without port number)
+- OPTIONAL: `[-u | --url]` (URL of your Sonarr Instance, without port number. Default is `https://localhost`)
 - OPTIONAL: `[-p | --port]` (Port of your Sonarr Instance. Default is 8989)
 - OPTIONAL: `--print_progress` (Show progress in the terminal. Default it False)
 

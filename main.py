@@ -1,14 +1,32 @@
 import requests
 import json
 import re
+import argparse
 
 from requests import api
 
-#UPDATE THESE THREE VALUES!!
-apikey = '000000' #YOUR API KEY
-url = 'http://192.168.1.208' #YOUR SONARR URL
-port = '8989' #YOUR SONARR PORT
-#END
+parser = argparse.ArgumentParser()
+
+parser.add_argument("apikey",
+                    help="Your Sonarr API Key")
+
+parser.add_argument("-u", "--url",
+                    help="URL to your Sonarr Instance (without Port Number)", default="http://localhost")
+
+parser.add_argument("-p", "--port", type=int,
+                    help="Port number for your Sonarr instance", default=8989)
+
+parser.add_argument("--print_progress",
+                    help="Print progress from the scan in the terminal", default=False, action='store_true')
+
+args = parser.parse_args()
+
+# USER ARGUMENTS
+apikey = args.apikey # User API Key
+url = args.url #YOUR SONARR URL
+port = args.port #YOUR SONARR PORT
+print_progress = args.print_progress
+# END
 
 IGNORE_DEFAULT_EPISODE_NAME = True # Ignore files where the Episode uses default episode naming?
 SCRUB__AND__STRINGS = True # scrub 'and' from file name strings. Fixes & vs 'and' mismatches
@@ -34,7 +52,7 @@ def process_season(series_id, series_name):
     response_episode = requests.get(f'{url}:{port}/api/episode?apikey={apikey}&seriesid={series_id}')
     json_episode = json.loads(response_episode.text)
 
-    print("Processing: " + str(series_id) + " | " + series_name)
+    if print_progress: print("Processing: " + str(series_id) + " | " + series_name)
     
     write_title = False
 

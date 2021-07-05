@@ -5,6 +5,7 @@ import argparse
 
 from requests import api
 
+# SET THE CLI ARGUMENTS
 parser = argparse.ArgumentParser()
 
 parser.add_argument("apikey",
@@ -20,8 +21,10 @@ parser.add_argument("--print_progress",
                     help="Print progress from the scan in the terminal", default=False, action='store_true')
 
 args = parser.parse_args()
+# END
 
 # USER ARGUMENTS
+# These now get populated by argparse, but could be overwritten here
 apikey = args.apikey # User API Key
 url = args.url #YOUR SONARR URL
 port = args.port #YOUR SONARR PORT
@@ -88,15 +91,19 @@ def process_season(series_id, series_name):
                 #title_conv = title
 
                 if SCRUB__AND__STRINGS:
+                    file_conv = file_conv.replace('dvd','') # bit of a workaround!
                     file_conv = file_conv.replace('and','')
+
+                    title_conv = title_conv.replace('dvd','') # bit of a workaround!
                     title_conv = title_conv.replace('and','')
                 
                 if ALLOW_MULIT_PART_EPISODE_FILES and is_multi_episode(str.lower(file)):
-                    title_conv = title_conv[:-1] # remove the part ID from the end of the name (eg 'Epidode Name (1)' becomes 'Episode Name')
-                    title_conv = title_conv.replace('part','') # remove the string 'part' from the file name (eg 'Episode Name Part 1' becomes 'Episode Name' (as the 1 was removed above) )
-                    # note: If a file used something other that 'PART n' this won't pick it up
-                    # Also, 'part' might be a valid part of the main episode name, so this would break that - should fix to only remove 'part' from the end
-                    # But this only gets applied where we already know it's a multi episode file, so shouldn't cause too many issues
+
+                    if bool(re.search('(part[0-9])+',title_conv)):
+                        title_conv = str.lower(re.sub('part[0-9]', '', title_conv))
+                    else:
+                        title_conv = title_conv[:-1] # remove the part ID from the end of the name (eg 'Epidode Name (1)' becomes 'Episode Name')
+                    #title_conv = title_conv.replace('part','') # remove the string 'part' from the file name (eg 'Episode Name Part 1' becomes 'Episode Name' (as the 1 was removed above) )
 
                 if default_episode(title) and IGNORE_DEFAULT_EPISODE_NAME:
                     # This function tests is the episode title is just 'default' naming. eg 'Episode 1'
@@ -116,6 +123,7 @@ def process_season(series_id, series_name):
                         if is_multi_episode(str.lower(file)):
                             text_file.write("MULTIFILE: ")
                         text_file.write("Mismatch Found: %s" % title + " | " + file + "\n")
+                        #text_file.write("Mismatch Found: %s" % title_conv + " | " + file_conv + "\n")
                     z+=1
     return z
 

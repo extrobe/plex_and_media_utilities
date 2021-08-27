@@ -1,21 +1,32 @@
 from plexapi.server import PlexServer
-#import datetime
 
 baseurl = 'http://192.168.1.208:32400'
 token = ' '
-ratings_rank = {"gb/E":00 ,"gb/Uc": 10, "gb/U": 20, "gb/PGc": 30, "gb/PG": 40, "gb/12A":50,"gb/12": 60,"gb/15": 70,"gb/18": 80}
+ratings_rank = {
+    "gb/E"   : 00,
+    "gb/Uc"  : 10,
+    "gb/U"   : 20,
+    "gb/PGc" : 30,
+    "gb/PG"  : 40,
+    "gb/12A" : 50,
+    "gb/12"  : 60,
+    "gb/15"  : 70,
+    "gb/18"  : 80
+    }
+
+DRY_RUN = True
+LIMIT = None
 
 plex = PlexServer(baseurl,token)
-
 collection_list = []
 
 
 def update_collection_ratings():
-    """tbc"""
+    """Scan and update collections"""
     library = plex.library.section('Films')
 
     #Loop through each collection
-    for collection in library.search(libtype='collection'):
+    for collection in library.search(libtype='collection',limit=LIMIT):
         print()
         print("COLLECTION: " + collection.title + ": " + str(collection.contentRating))
         
@@ -37,12 +48,15 @@ def update_collection_ratings():
                 
                 print("READY TO UPDATE " + collection.title + " from " + collection.contentRating + " to " + target_rating_for_collection)
 
-                collection.edit(**{
-                "contentRating.value": target_rating_for_collection,
-                "contentRating.locked": 1,
-                })
+                if not DRY_RUN:
+                    collection.edit(**{
+                    "contentRating.value": target_rating_for_collection,
+                    "contentRating.locked": 1,
+                    })
 
-                print("UPDATED")
+                    print("UPDATED")
+                else:
+                    print("DRY RUN - NO CHANGES MADE")
 
             else:
                 print("NO UPDATE NECESSARY")

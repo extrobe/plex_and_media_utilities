@@ -63,7 +63,6 @@ def process_season(series_id, series_name):
             title = element_episode['title'] #the text name of the episode
             has_file = element_episode['hasFile'] #Boolean value as to whether there is a file associated with the episode
 
-            
             if has_file: #If we don't already have a file associated with the episode, we won't need to check it
                 file = element_episode['episodeFile']['relativePath'] #file name we currently have for the episode
 

@@ -1,8 +1,12 @@
-# sonarr_episode_changes
+# plex_and_media_utilities
+A set of tools for managing and maintaining your media libraries
+
+Please check the Wiki for more details on each script, but a short summary is detailed below
+
+## Sonarr Episode CHanges
 Simple tool to find mismatches between files and episodes
 
-## Overview
-This script is design to help identofy when there have been changes to the season/episode ordering at TVDB (the episode meta source for Sonarr)
+This script is design to help identify when there have been changes to the season/episode ordering at TVDB (the episode meta source for Sonarr)
 
 When ordering gets changed / episodes are added and removed, this can result in Sonarr mapping your files incorretly.
 
@@ -12,72 +16,13 @@ This only works if you keep the episode name as part of your file name.
 
 However if you have other metadata in your file names, that should be fine.
 
-### Example of Misaligned Files
-![Alt text](screens/sonarr.png?raw=true "Title")
+## Plex Collection Content Ratings
+Scans your Plex collections, and updates the Colection content rating to match the 'lowest' rating of the films within the collection
 
+Use this tool when you have Content Rating restricted profiles on your Plex server.
+This will ensure that collections containing a mixture of content ratings will still be available if at least 1 item matches the Content Rating restriction.
 
-### Example of Script Output
-![Alt text](screens/output.png?raw=true "Title")
+Note: This Doesn't mean the restricted user will see the restricted items - they will see the Collection, along with any items that meet the profile limit.
 
-
-## Usage
-Edit and run the script.
-
-Review the output file it generates, and detirmine if you need to re-arrange your files.
-
-**Note:**
-Just because an item was flagged, doesn't mean it's a genuine issue - just means it didn't see the episode title in the file name
-
-**Important:**
-This script DOES NOT change anything in Sonarr. Only YOU do that. However, you should make sure you're comfortable with what this code is doing before you run it - don't trust random code on the internet!
-
-
-## Setup
-You only need the main.py file.
-
-Open a terminal in the same folder as the file
-
-use the command
-
-`[python|python3] main.py `
-
-with the following arguments;
-
-- MANDATORY: `apikey` (API key from Sonarr>Settings>General)
-- OPTIONAL: `[-u | --url]` (URL of your Sonarr Instance, without port number. Default is `https://localhost`)
-- OPTIONAL: `[-p | --port]` (Port of your Sonarr Instance. Default is 8989)
-- OPTIONAL: `--print_progress` (Show progress in the terminal. Default it False)
-
-### Example:
-`python main.py 'aaabbbccc11122333' -u='http://192.168.1.101' -p=8989 --print_progress`
-
-_(Requires Python3. I have Python mapped to Python3)_
-
-this will create an output.txt file containing your results
-
-It should be pretty fast - for me it scans > 35,000 files in under 60 seconds, with my instance being on a remote device
-
-## Optional Settings
-
-These can be edited directly in the main.py file, though might be migrated to cli arugments in the future.
-
-### ignore_default_episdode_name
-Default = True
-
-If you have episodes without a name, they just get 'Episode 1', but you may not want this in your file name. Setting to True ignore this files.
-In the future I would like to instead 'test' these items against the SxxEyy string in the filename
-
-### scrub__and__strings
-Default = True
-
-If you use '&' and 'and' interchangeably, it might flag files as an issue. Setting this to True scrubs the work 'and' from the comparisons. ('&' already gets scrubbed unless you're using Strict comparison - in which case you would want to set this value to False)
-
-### allow_multi_part_episode_files
-Default = True
-
-When you have files covering multiple episodes, and the episode name is Episode Name (Part 1) & Episode Name (Part 2) , will match correctly if the rest of the episode name (excluding the 'part 1' part) matches
-
-## Known Limitations
-
-- There might still be some multi-episode files which don't get handled corectly, but believe most scenarios are now covered
-- If the Episode doesn't have a title, it looks like it always defaults to 'Episode _N_ ' . This script has the option to ignore these, but doesn't (yet) instead check the 'Episode 1' matches up with the file name S01E01 episode ID
+## Plex Meta Manager - Create Films YML File
+Use this file in conjunction with Plex Meta Manager. It helps you create your initial YML file based on your existing custom metadata.

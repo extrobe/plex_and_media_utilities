@@ -6,8 +6,8 @@ Please check the Wiki for more details on each script, but a short summary is de
 ## Sonarr Episode CHanges
 Simple tool to find mismatches between files and episodes
 
-[Wiki](https://github.com/extrobe/plex_and_media_utilities/wiki/Sonarr-Episode-Changes)
-[Source](https://github.com/extrobe/plex_and_media_utilities/blob/main/sonarr_episode_changes.py)
+* [Wiki](https://github.com/extrobe/plex_and_media_utilities/wiki/Sonarr-Episode-Changes)
+* [Source](https://github.com/extrobe/plex_and_media_utilities/blob/main/sonarr_episode_changes.py)
 
 
 This script is design to help identify when there have been changes to the season/episode ordering at TVDB (the episode meta source for Sonarr)
@@ -23,8 +23,8 @@ However if you have other metadata in your file names, that should be fine.
 ## Plex Collection Content Ratings
 Scans your Plex collections, and updates the Colection content rating to match the 'lowest' rating of the films within the collection
 
-[Wiki](https://github.com/extrobe/plex_and_media_utilities/wiki/Plex-Collection-Content-Ratings)
-[Source](https://github.com/extrobe/plex_and_media_utilities/blob/main/plex_collection_content_rating.py)
+* [Wiki](https://github.com/extrobe/plex_and_media_utilities/wiki/Plex-Collection-Content-Ratings)
+* [Source](https://github.com/extrobe/plex_and_media_utilities/blob/main/plex_collection_content_rating.py)
 
 Use this tool when you have Content Rating restricted profiles on your Plex server.
 This will ensure that collections containing a mixture of content ratings will still be available if at least 1 item matches the Content Rating restriction.

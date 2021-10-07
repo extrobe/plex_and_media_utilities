@@ -1,15 +1,21 @@
 import requests
 import praw
 import json
+import re
 
 sonarr_apikey = 'xxx' ## Add your Sonarr API Key
 sonarr_url = 'http://192.168.1.208' ## Add your Sonarr URL
 sonarr_port = 8989 ## Add your Sonarr Port (Default 8989)
 
-##############################################################################
-# Create a comma separate list of users you want to exclude from the results #
-##############################################################################
-exclude_auth = ["user1","user2"]
+####################################################################################
+# Create a comma separate list of users you want to exclude from the results       #
+####################################################################################
+EXCLUDE_AUTH = ["user1","user2"]
+
+####################################################################################
+# When set to True, ignores any submissions that appear to be for a single episode #
+####################################################################################
+FULL_PACK_ONLY = True
 
 
 def process_season(series_id, series_name):
@@ -32,24 +38,32 @@ def process_season(series_id, series_name):
 
         author = submission.author.name
 
-        if author not in exclude_auth:
+        if author not in EXCLUDE_AUTH:
 
-            if not write_title:
+            if FULL_PACK_ONLY and not is_fullpack(submission.title):
+                pass
+            else:
+                if not write_title:
+                    with open("Output_Plex_TitleCards.txt", "a") as text_file:
+                        text_file.write("\n### Results Found For: %s" % series_name + " ###\n")
+                        write_title = True
+
                 with open("Output_Plex_TitleCards.txt", "a") as text_file:
-                    text_file.write("\n### Results Found For: %s" % series_name + " ###\n")
-                    write_title = True
-
-            with open("Output_Plex_TitleCards.txt", "a") as text_file:
-                text_file.write(submission.title + "\n")
-                text_file.write("     " + "https://www.reddit.com" + submission.permalink + "\n")
-                text_file.write("     " + author + "\n")
-            
-            y = y+1
+                    text_file.write(submission.title + "\n")
+                    text_file.write("     " + "https://www.reddit.com" + submission.permalink + "\n")
+                    text_file.write("     " + author + "\n")
+                    #text_file.write(str(is_fullpack(submission.title))+"\n")
+                
+                y = y+1
 
     if y == 0:
         print("no results found")
     
     print("")
+
+def is_fullpack(submission_name):
+    """Audits the submission name to detirmine if it's a single episode or a full pack"""
+    return not bool(re.search('(s\d{1,4}e\d{1,4})+',str.lower(submission_name)))
 
 def main():
     """Kick off the primary process."""

@@ -3,7 +3,7 @@ A set of tools for managing and maintaining your media libraries
 
 Please check the Wiki for more details on each script, but a short summary is detailed below
 
-## Sonarr Episode CHanges
+## Sonarr Episode Changes
 Simple tool to find mismatches between files and episodes
 
 * [Wiki](https://github.com/extrobe/plex_and_media_utilities/wiki/Sonarr-Episode-Changes)
@@ -30,6 +30,13 @@ Use this tool when you have Content Rating restricted profiles on your Plex serv
 This will ensure that collections containing a mixture of content ratings will still be available if at least 1 item matches the Content Rating restriction.
 
 Note: This Doesn't mean the restricted user will see the restricted items - they will see the Collection, along with any items that meet the profile limit.
+
+## Plex Title Card Matcher
+Scans your Sonarr library and searches the r/PlexTitleCards subreddit for matching submissions
+
+
+* [Source](https://github.com/extrobe/plex_and_media_utilities/blob/main/plex_title_card_finder.py)
+
 
 ## Plex Meta Manager - Create Films YML File
 Use this file in conjunction with Plex Meta Manager. It helps you create your initial YML file based on your existing custom metadata.

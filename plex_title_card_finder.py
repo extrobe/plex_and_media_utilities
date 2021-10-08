@@ -46,7 +46,7 @@ def process_season(series_id, series_name):
 
         author = submission.author.name
         flair = submission.link_flair_text
-        if flair is not None and bool(re.search('request',str.lower(''.join(map(str, flair))))):
+        if flair is not None and bool(re.search('request|discussion',str.lower(''.join(map(str, flair))))):
             pass
 
         elif author not in EXCLUDE_AUTH:
@@ -100,7 +100,7 @@ def main():
         series_path = element['path']
 
         # For now, limit the number of files processed - remove this in the future #
-        if z < 100:
+        if z < 1000:
         ##
 
             if ASSET_FILTER and asset_exists(series_path):

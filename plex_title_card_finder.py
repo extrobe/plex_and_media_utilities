@@ -3,21 +3,31 @@ import praw
 import json
 import re
 import os
+import glob
 
-sonarr_apikey = 'xxx' ## Add your Sonarr API Key
-sonarr_url = 'http://192.168.1.208' ## Add your Sonarr URL
+sonarr_apikey = 'abc' ## Add your Sonarr API Key
+sonarr_url = 'http://192.168.1.8' ## Add your Sonarr URL
 sonarr_port = 8989 ## Add your Sonarr Port (Default 8989)
+
+limit = 0 # set to 0 for no limit
 
 ####################################################################################
 # Root path for your assets. Allows us to check if there are already any assets    #
 ####################################################################################
-ASSET_ROOT = '/Volumes/assets/tv'
+ASSET_ROOT = '/Volumes/Plex Thumbs/PlexMetaManager/assets/tv'
 ASSET_FILTER = True
+
+####################################################################################
+# Settings for scanning for missing episode files                                  #
+####################################################################################
+SCAN_FOR_MISSING = True # Scan for missing episode files when some assets exist
+INCLUDE_SPECIALS = False # When scanning for missing episode files, include Specials/Season 00
+PRINT_SOURCE = True # if you have a source.txt file, print for output for faster checking
 
 ####################################################################################
 # Create a comma separate list of users you want to exclude from the results       #
 ####################################################################################
-EXCLUDE_AUTH = ["user1","user2"]
+EXCLUDE_AUTH = ["extrobe"]
 
 ####################################################################################
 # When set to True, ignores any submissions that appear to be for a single episode #
@@ -33,8 +43,8 @@ def process_season(series_id, series_name):
     y = 0
 
     reddit = praw.Reddit(
-    client_id="xxx", ## Add your Reddit Client ID
-    client_secret="xxx", ## Add your Reddit Secret
+    client_id="abc", ## Add your Reddit Client ID
+    client_secret="abc", ## Add your Reddit Secret
     redirect_uri="http://localhost:8080",
     user_agent="Plex Title Card Matcher",
     )
@@ -82,6 +92,68 @@ def asset_exists(series_path):
     for files in os.walk(validation_path):
         return bool(re.search('(s\d{1,4}e\d{1,4})+', str.lower(''.join(map(str, files))) ))
 
+def missing_episode_assets(series_id, series_name, series_path):
+    """compare assets with expected episdoes"""
+
+    print("scanning missing files... for " + series_name)
+    #print(series_id)
+
+    validation_path = ASSET_ROOT + series_path[series_path.rfind('/'):]
+    print("scanning path... " + validation_path)
+
+    response_episode = requests.get(f'{sonarr_url}:{sonarr_port}/api/episode?seriesID={series_id}&apikey={sonarr_apikey}')
+    json_episodes = json.loads(response_episode.text)
+
+    e = 0
+
+    for element in json_episodes:
+        season = element['seasonNumber']
+        episode = element['episodeNumber']
+        hasfile = element['hasFile']
+
+        if season > 0 and hasfile:
+            search_string = 'S' + str(season).zfill(2) + 'E' + str(episode).zfill(2)
+
+            f = glob.glob(validation_path+'/'+search_string+'.*')
+
+            if len(f) == 0:
+                asset_missing = True
+            else:
+                for g in f:
+                    if g.lower().endswith(('.png', '.jpg', '.jpeg')):
+                        asset_missing = False
+
+            if asset_missing:
+
+                with open("Output_Plex_TitleCards_Missing.txt", "a") as text_file:
+
+                    if e == 0:
+                        text_file.write("\n" + '### Missing Files For: ' + series_name + ' ###' + "\n")
+
+                        if PRINT_SOURCE:
+                            text_file.write("\n" + get_source_txt(validation_path) + "\n")
+                            #get_source_txt(validation_path)
+
+                        e=1
+
+                    text_file.write('S' + str(season).zfill(2) + 'E' + str(episode).zfill(2))
+                    text_file.write(" is missing" + "\n")
+
+    print('')
+
+def get_source_txt(validation_path):
+    """get contents of a text file to append to assets_missing test file"""
+
+    source_string = validation_path + '/source.txt'
+    if bool(os.path.isfile(source_string)):
+        with open(source_string,'r') as f:
+            src = f.read()
+
+        return src
+        #with open("Output_Plex_TitleCards_Missing.txt", "a") as text_file:
+            #text_file.write(src + "\n")
+
+
 def main():
     """Kick off the primary process."""
     print("STARTED!")
@@ -90,6 +162,10 @@ def main():
 
     with open("Output_Plex_TitleCards.txt", "w") as text_file:
       text_file.write("Output for for today...\n")
+
+    if SCAN_FOR_MISSING:
+        with open("Output_Plex_TitleCards_Missing.txt", "w") as text_file:
+            text_file.write("Output for for today...\n")
 
     response_series = requests.get(f'{sonarr_url}:{sonarr_port}/api/series?apikey={sonarr_apikey}')
     json_series = json.loads(response_series.text)
@@ -100,11 +176,11 @@ def main():
         series_path = element['path']
 
         # For now, limit the number of files processed - remove this in the future #
-        if z < 1000:
+        if limit == 0 or (limit > 0 and z < limit):
         ##
 
             if ASSET_FILTER and asset_exists(series_path):
-                pass
+                missing_episode_assets(series_id, series_name, series_path)
             else:
                 process_season(series_id, series_name)
             z = z+1
@@ -112,7 +188,10 @@ def main():
     print("DONE! " + str(z) + " Shows scanned!")
 
     if z > 0:
-        print("Check your output.txt file for details")
+        print("Check your Output_Plex_TitleCards.txt file for details")
+    
+    if SCAN_FOR_MISSING:
+        print("Check your Output_Plex_TitleCards_Missing.txt file for details of missing files")
 
 if __name__ == "__main__":
     main()

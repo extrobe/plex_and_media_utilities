@@ -32,9 +32,9 @@ This will ensure that collections containing a mixture of content ratings will s
 Note: This Doesn't mean the restricted user will see the restricted items - they will see the Collection, along with any items that meet the profile limit.
 
 ## Plex Title Card Matcher
-Scans your Sonarr library and searches the r/PlexTitleCards subreddit for matching submissions
+Looks up any shows you have against the subreddit r/PlexTitleCards to find any matches, and flag any 'incomplete' asset sets in your library.
 
-
+* [Wiki](https://github.com/extrobe/plex_and_media_utilities/wiki/Plex-Title-Card-Finder)
 * [Source](https://github.com/extrobe/plex_and_media_utilities/blob/main/plex_title_card_finder.py)
 
 

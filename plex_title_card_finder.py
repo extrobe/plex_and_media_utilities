@@ -37,7 +37,7 @@ FULL_PACK_ONLY = True
 
 def process_season(series_id, series_name):
 
-    print("scanning... for " + series_name)
+    print("scanning r/PlexTitleCards... for " + series_name)
 
     write_title = False
     y = 0
@@ -95,7 +95,8 @@ def asset_exists(series_path):
 def missing_episode_assets(series_id, series_name, series_path):
     """compare assets with expected episdoes"""
 
-    print("scanning missing files... for " + series_name)
+    print("Local assets found... for " + series_name)
+    print("scanning for missing files...")
     #print(series_id)
 
     validation_path = ASSET_ROOT + series_path[series_path.rfind('/'):]

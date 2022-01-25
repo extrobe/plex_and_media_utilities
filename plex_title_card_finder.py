@@ -5,11 +5,20 @@ import re
 import os
 import glob
 
+#from nltk.corpus import stopwords
+#from nltk.tokenize import word_tokenize
+#from nltk.tokenize.treebank import TreebankWordDetokenizer
+
 sonarr_apikey = 'abc' ## Add your Sonarr API Key
-sonarr_url = 'http://192.168.1.8' ## Add your Sonarr URL
+sonarr_url = 'http://192.168.1.108' ## Add your Sonarr URL
 sonarr_port = 8989 ## Add your Sonarr Port (Default 8989)
 
 limit = 0 # set to 0 for no limit
+
+####################################################################################
+# what search method should be used? 'strict' or 'loose'                           #
+####################################################################################
+SEARCH_MODE = 'strict'
 
 ####################################################################################
 # Root path for your assets. Allows us to check if there are already any assets    #
@@ -35,6 +44,25 @@ EXCLUDE_AUTH = ["extrobe"]
 FULL_PACK_ONLY = True
 
 
+# Function to convert  
+def listToString(s): 
+    
+    # initialize an empty string
+    str1 = " AND " 
+    
+    # return string  
+    return (str1.join(s))
+
+def generate_search_string(series_name):
+
+    if SEARCH_MODE == 'strict':
+        search_string = '"' + series_name + '"'
+    else:
+        search_string = series_name
+
+    return search_string
+
+
 def process_season(series_id, series_name):
 
     print("scanning r/PlexTitleCards... for " + series_name)
@@ -44,15 +72,16 @@ def process_season(series_id, series_name):
 
     reddit = praw.Reddit(
     client_id="abc", ## Add your Reddit Client ID
-    client_secret="abc", ## Add your Reddit Secret
+    client_secret="a-b-c", ## Add your Reddit Secret
     redirect_uri="http://localhost:8080",
     user_agent="Plex Title Card Matcher",
     )
 
     reddit.read_only = True
 
+    generate_search_string(series_name)
 
-    for submission in reddit.subreddit("PlexTitleCards").search(series_name, limit=None):
+    for submission in reddit.subreddit("PlexTitleCards").search(generate_search_string(series_name), limit=None, syntax="lucene"):
 
         author = submission.author.name
         flair = submission.link_flair_text
@@ -65,11 +94,11 @@ def process_season(series_id, series_name):
                 pass
             else:
                 if not write_title:
-                    with open("Output_Plex_TitleCards.txt", "a") as text_file:
+                    with open("Output_Plex_TitleCards.txt", "a", encoding="utf-8") as text_file:
                         text_file.write("\n### Results Found For: %s" % series_name + " ###\n")
                         write_title = True
 
-                with open("Output_Plex_TitleCards.txt", "a") as text_file:
+                with open("Output_Plex_TitleCards.txt", "a", encoding="utf-8") as text_file:
                     text_file.write(submission.title + "\n")
                     text_file.write("     " + "https://www.reddit.com" + submission.permalink + "\n")
                     text_file.write("     " + author + "\n")
@@ -126,7 +155,7 @@ def missing_episode_assets(series_id, series_name, series_path):
 
             if asset_missing:
 
-                with open("Output_Plex_TitleCards_Missing.txt", "a") as text_file:
+                with open("Output_Plex_TitleCards_Missing.txt", "a", encoding="utf-8") as text_file:
 
                     if e == 0:
                         text_file.write("\n" + '### Missing Files For: ' + series_name + ' ###' + "\n")
@@ -161,11 +190,11 @@ def main():
 
     z = 0
 
-    with open("Output_Plex_TitleCards.txt", "w") as text_file:
+    with open("Output_Plex_TitleCards.txt", "w", encoding="utf-8") as text_file:
       text_file.write("Output for for today...\n")
 
     if SCAN_FOR_MISSING:
-        with open("Output_Plex_TitleCards_Missing.txt", "w") as text_file:
+        with open("Output_Plex_TitleCards_Missing.txt", "w", encoding="utf-8") as text_file:
             text_file.write("Output for for today...\n")
 
     response_series = requests.get(f'{sonarr_url}:{sonarr_port}/api/series?apikey={sonarr_apikey}')
@@ -181,7 +210,8 @@ def main():
         ##
 
             if ASSET_FILTER and asset_exists(series_path):
-                missing_episode_assets(series_id, series_name, series_path)
+                if SCAN_FOR_MISSING:
+                    missing_episode_assets(series_id, series_name, series_path)
             else:
                 process_season(series_id, series_name)
             z = z+1

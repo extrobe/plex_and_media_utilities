@@ -131,7 +131,7 @@ def missing_episode_assets(series_id, series_name, series_path):
     validation_path = ASSET_ROOT + series_path[series_path.rfind('/'):]
     print("scanning path... " + validation_path)
 
-    response_episode = requests.get(f'{sonarr_url}:{sonarr_port}/api/episode?seriesID={series_id}&apikey={sonarr_apikey}')
+    response_episode = requests.get(f'{sonarr_url}:{sonarr_port}/api/v3/episode?seriesID={series_id}&apikey={sonarr_apikey}')
     json_episodes = json.loads(response_episode.text)
 
     e = 0
@@ -197,7 +197,7 @@ def main():
         with open("Output_Plex_TitleCards_Missing.txt", "w", encoding="utf-8") as text_file:
             text_file.write("Output for for today...\n")
 
-    response_series = requests.get(f'{sonarr_url}:{sonarr_port}/api/series?apikey={sonarr_apikey}')
+    response_series = requests.get(f'{sonarr_url}:{sonarr_port}/api/v3/series?apikey={sonarr_apikey}')
     json_series = json.loads(response_series.text)
 
     for element in json_series:
